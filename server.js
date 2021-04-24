@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 // const fsPromises = require('fs/promises');
+// for note id
 var uuid = require('uuid-random');
 
 const app = express();
@@ -15,22 +16,12 @@ app.use(express.json());
 // keeps css and js in place
 app.use('/assets', express.static('assets'));
 
-// const storage = {
-//     next: 0,
-//     items: {
-//         5: {
-//             id: 5,
-//             title: "my cool note",
-//             text: " my cool note contents",
-//         }
-//     },
-// };
-
 fs.readFile('db.json', 'utf-8', (err, data) => {
 
     if (err) throw err;
 
     const notes = JSON.parse(data);
+    console.log(notes)
 
     // paths
     // direct to notes html
@@ -66,7 +57,7 @@ fs.readFile('db.json', 'utf-8', (err, data) => {
     function addNote() {
         fs.writeFile('db.json', JSON.stringify(notes, '/t'), err => {
             if (err) throw err;
-        })
+        });
     };
 
     // retrieve notes with specified ID

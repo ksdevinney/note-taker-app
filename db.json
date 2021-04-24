@@ -3,8 +3,8 @@
     "items": {
         "5": {
             "id": 5,
-            "title": "my cool note",
-            "text": " my cool note contents"
+            "title": "note",
+            "text": "here's a note"
         }
     }
 }

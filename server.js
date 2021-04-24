@@ -2,7 +2,8 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-// const fsPromises = require('fs/promises');
+const fsPromises = require('fs/promises');
+const util = require('util');
 // for note id
 var uuid = require('uuid-random');
 
@@ -16,75 +17,51 @@ app.use(express.json());
 // keeps css and js in place
 app.use('/assets', express.static('assets'));
 
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
+
 fs.readFile('db.json', 'utf-8', (err, data) => {
 
     if (err) throw err;
 
-    const notes = JSON.parse(data);
+    let notes = JSON.parse(data);
     console.log(notes)
 
     // paths
-    // direct to notes html
+    // direct to notes.html
     app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, 'notes.html')));
-    app.get('/api/notes', function (req, res) {
+    app.get('/api/notes', async function (req, res) {
         res.json(notes);
     });
 
-    // post route
-    app.post('/api/notes', function (req, res) {
+    //post route
+    app.post('/api/notes', async function (req, res) {
         let newNote = req.body;
+        // add a unique id to the new note
+        newNote.id = uuid();
+        // get current list of notes, add to db file
         notes.push(newNote);
-        addNote();
-        console.log('ayyyyyyy');
-    });
+        // respond with notes array
+        res.json(notes);
+        await fsPromises.writeFile('db.json', JSON.stringify(notes, null, 2));
+    })
 
-    // direct to index page for anything else
     app.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
-    // function readJson(callback) {
-    //     fs.readFile('db.json', 'utf8', (err, data) => {
-    //         if (err) {
-    //             callback(err);
-    //             return;
-    //         }
-
-    //         const rawNotes = JSON.parse(data);
-    //         callback(null, rawNotes);
-    //     })
-    // };
-
-    // add notes to JSON file
-    function addNote() {
-        fs.writeFile('db.json', JSON.stringify(notes, '/t'), err => {
-            if (err) throw err;
-        });
+    // async because it needs to wait for notes file to be read
+    async function readJson() {
+        let foundNotes = await readFileAsync('db.json', 'utf8');
+        let parsedNotes;
+        // if notes aren't in an array etc
+        try {
+            parsedNotes = [].concat(JSON.parse(foundNotes));
+        } catch (err) {
+            parsedNotes = [];
+        }
+        // return the value
+        return parsedNotes;
     };
 
-    // retrieve notes with specified ID
-    app.get('/api/notes/:id', function(req, res) {
-        res.json(notes[req.params.id]);
-    });
-
-    // readJson((err, data) => {
-    //     if (err) {
-    //         throw err;
-    //     }
-    //     data
-    // })
-
-
-    function createItem(value) {
-        const id = uuid();
-        // storage.items[id] = value;
-        // storage.items[id].id = id;
-        return id;
-    };
-
-    function deleteItem(id) {
-        storage.items[id] = undefined;
-    };
-
-    // Array.from(Object.values(storage.items));
 
 });
 

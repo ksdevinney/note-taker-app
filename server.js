@@ -74,9 +74,9 @@ fs.readFile('db.json', 'utf-8', (err, data) => {
 
 
     function createItem(value) {
-        const id = storage.next++;
-        storage.items[id] = value;
-        storage.items[id].id = id;
+        const id = uuid();
+        // storage.items[id] = value;
+        // storage.items[id].id = id;
         return id;
     };
 

@@ -44,6 +44,17 @@ fs.readFile('db.json', 'utf-8', (err, data) => {
         // respond with notes array
         res.json(notes);
         await fsPromises.writeFile('db.json', JSON.stringify(notes, null, 2));
+    });
+
+    // delete route
+    app.delete('/api/notes/:id', async function (req, res) {
+        // req.params.id
+        const index = notes.findIndex((element) => element.id === req.params.id);
+        if(index != -1) {
+            notes.splice(index, 1);
+            await fsPromises.writeFile('db.json', JSON.stringify(notes, null, 2));
+        } 
+        res.json();
     })
 
     app.get('/*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));

@@ -2,6 +2,19 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: #a2b9bc;
+}
+
+.jumbotron {
+  border: 2px solid #878f99;
+}
+
+/* .list-container, .emtpty-note {
+  background-color: #b2ad7f;
+} */
+
+.navbar {
+  border-bottom: 2px solid #878f99;
 }
 
 .save-note {
@@ -26,16 +39,18 @@ html, body {
   resize: none;
   height: calc(100% - 63px);
   padding-top: 15px;
+  background-color: #a2b9bc;
 }
 
 .note-title {
   height: 50px;
   margin-top: 13px;
   font-size: 3rem;
+  background-color: #a2b9bc;
 }
 
 .note-title:read-only, .note-textarea:read-only {
-  color: #757575;
+  color: #a2b9bc;
 }
 
 .list-container .card {
@@ -55,6 +70,7 @@ html, body {
   border-top: none;
   border-top-right-radius: 0;
   border-top-left-radius: 0;
+  background-color: #b2ad7f;
 }
 
 .list-container i {
